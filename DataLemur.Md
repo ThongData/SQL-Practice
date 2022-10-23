@@ -107,3 +107,22 @@ where g.rank<=10
 group by a.artist_name) temp
 where temp.artist_rank <=5
 ````
+
+## 📌 Question 4 : 
+![Data Lemur 4 1](https://user-images.githubusercontent.com/116416338/197393677-8a8effb8-15a1-4207-a857-141448cdb0ac.png)
+![Data Lemur 4 2](https://user-images.githubusercontent.com/116416338/197393701-f4c5228c-9ea0-4be4-83c2-04a031152975.png)
+
+````sql
+with temp as (
+SELECT  
+user_id,
+case when texts.text_id is null then 1 else 0 end as signup
+FROM emails 
+  left join texts 
+    on emails.email_id = texts.email_id
+    and signup_action = 'Confirmed')
+
+SELECT
+ROUND(SUM(signup)::decimal/ COUNT(user_id), 2) AS confirmation_rate
+from temp
+````
