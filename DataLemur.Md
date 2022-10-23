@@ -61,3 +61,49 @@ left join company_pages c
     on c.company_id = e.company_id) as temp
 where ranking = 1 and indiv_followers>company_followers
 ````
+
+## 📌 Question 3 : 
+![Data Lemur 3 1](https://user-images.githubusercontent.com/116416338/197391506-242f3b48-1db2-4f02-8c4e-2ab72a92704b.png)
+![Data Lemur 3 2](https://user-images.githubusercontent.com/116416338/197391517-2b949f35-030a-4830-b33d-4977d8d392e6.png)
+
+````sql
+WITH top_artists
+AS (
+  SELECT 
+    artist_id,
+    DENSE_RANK() OVER (
+      ORDER BY song_count DESC) AS artist_rank
+  FROM (    
+    SELECT songs.artist_id, COUNT(songs.song_id) AS song_count
+    FROM songs
+    INNER JOIN global_song_rank AS ranking
+      ON songs.song_id = ranking.song_id
+    WHERE ranking.rank <= 10
+    GROUP BY songs.artist_id) 
+AS top_songs)
+
+SELECT 
+  artists.artist_name, top_artists.artist_rank
+FROM top_artists
+INNER JOIN artists
+  ON top_artists.artist_id = artists.artist_id
+WHERE top_artists.artist_rank <= 5
+ORDER BY top_artists.artist_rank, artists.artist_name;
+````
+
+````sql
+select 
+*
+from(
+SELECT
+a.artist_name,
+dense_rank() over(order by count(g.song_id) desc) as artist_rank
+from artists a 
+  left join songs s
+   on s.artist_id = a.artist_id
+    left join global_song_rank g
+      on g.song_id = s.song_id
+where g.rank<=10
+group by a.artist_name) temp
+where temp.artist_rank <=5
+````
