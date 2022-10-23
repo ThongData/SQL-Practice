@@ -21,6 +21,9 @@ and spending>50
 ## 📌 Question 2 : 
 ![Data Lemur 2 1](https://user-images.githubusercontent.com/116416338/197386632-c14b9abc-1b5c-4d4d-ab27-2358d6f4bc76.png)
 ![Data Lemur 2 2](https://user-images.githubusercontent.com/116416338/197386657-cad38c80-9416-45ae-aee5-4fcdfd35fb61.png)
+
+**Solution 1**
+
 ````sql
 WITH popular_companies 
 AS (
@@ -38,4 +41,23 @@ LEFT JOIN personal_profiles AS profiles
 	ON companies.personal_profile_id = profiles.profile_id
 WHERE profiles.followers > companies.highest_followers
 ORDER BY profiles.profile_id;
+````
+
+**Solution 2**
+````sql
+select
+temp.profile_id
+from
+(SELECT
+p.profile_id,
+p.name,
+p.followers as indiv_followers,
+c.followers as company_followers,
+rank() over(PARTITION BY p.profile_id order by c.followers desc) as ranking
+FROM personal_profiles p
+  left join employee_company e
+    on p.profile_id = e.personal_profile_id
+left join company_pages c
+    on c.company_id = e.company_id) as temp
+where ranking = 1 and indiv_followers>company_followers
 ````
