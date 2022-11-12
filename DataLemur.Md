@@ -126,3 +126,21 @@ SELECT
 ROUND(SUM(signup)::decimal/ COUNT(user_id), 2) AS confirmation_rate
 from temp
 ````
+## 📌 Question 5 : 
+
+````sql
+SELECT product_id,
+       CASE
+           WHEN category IS NULL THEN
+                  (SELECT inner_table.category
+                   FROM products AS inner_table
+                   WHERE inner_table.product_id < products.product_id
+                     AND inner_table.category IS NOT NULL
+                   ORDER BY inner_table.product_id DESC
+                   LIMIT 1)
+           ELSE category
+       END AS category,
+       name
+FROM products
+ORDER BY product_id;
+````
