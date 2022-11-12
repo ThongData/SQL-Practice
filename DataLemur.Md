@@ -127,7 +127,7 @@ ROUND(SUM(signup)::decimal/ COUNT(user_id), 2) AS confirmation_rate
 from temp
 ````
 ## 📌 Question 5 : 
-
+![Data Lemur 5](https://user-images.githubusercontent.com/116416338/201484815-5139c0be-f78e-40c9-9a48-314f161a050e.png)
 ````sql
 SELECT product_id,
        CASE
